@@ -5,3 +5,5 @@ db.sqlite3
 .DS_Store
 expo-app-backup/
 expo-app-backup2/
+myvenv/
+hw4.md
