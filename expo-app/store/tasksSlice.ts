@@ -1,9 +1,11 @@
-import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk,createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+const API_URL = 'http://localhost:8000/api/tasks/';
 export type Task = {
   id: string;
   title: string;
   completed: boolean;
+  completed_at: string;
 };
 
 type TasksState = {
@@ -14,35 +16,45 @@ const initialState: TasksState = {
   items: [],
 };
 
+export const fetchTasks = createAsyncThunk('tasks/fetch', async () => {
+  const response = await fetch(API_URL);
+  return (await response.json()) as Task[];
+});
+
+export const createTask = createAsyncThunk('tasks/create', async (title: string) => {
+  const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({title, completed: false}),
+  });
+  return (await response.json()) as Task;
+});
+
 const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    addTask: {
-      reducer(state, action: PayloadAction<Task>) {
-        state.items.push(action.payload);
-      },
-      prepare(title: string) {
-        return {
-          payload: {
-            id: nanoid(),
-            title,
-            completed: false,
-          },
-        };
-      },
-    },
-    toggleTask(state, action: PayloadAction<string>) {
+    toggleTask(state, action: PayloadAction<number>) {
       const task = state.items.find((item) => item.id === action.payload);
       if (task) {
         task.completed = !task.completed;
       }
+
     },
     deleteTask(state, action: PayloadAction<string>) {
       state.items = state.items.filter((item) => item.id !== action.payload);
     },
   },
+extraReducers: (builder) => {
+  builder.addCase(fetchTasks.fulfilled, (state, action) => {
+    state.items = action.payload;
+  });
+  builder.addCase(createTask.fulfilled, (state, action) => {
+    state.items.push(action.payload);
+  });
+},
+
 });
 
-export const { addTask, toggleTask, deleteTask } = tasksSlice.actions;
+export const { addTask, deleteTask } = tasksSlice.actions;
 export default tasksSlice.reducer;
