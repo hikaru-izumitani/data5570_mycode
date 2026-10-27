@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const API_URL = 'https://bool-sussex-saves-commitment.trycloudflare.com/api/tasks/';
+const API_URL = 'https://settlement-annotation-dayton-plan.trycloudflare.com/api/tasks/';
 export type Task = {
   id: number;
   title: string;
