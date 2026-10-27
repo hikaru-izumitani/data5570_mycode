@@ -1,14 +1,6 @@
-import Constants from 'expo-constants';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Platform } from 'react-native';
 
-function getApiUrl() {
-  const devHost = Constants.expoConfig?.hostUri?.split(':')[0];
-  const host = Platform.OS === 'web' ? 'localhost' : (devHost ?? 'localhost');
-  return `http://${host}:8000/api/tasks/`;
-}
-
-const API_URL = getApiUrl();
+const API_URL = 'https://bool-sussex-saves-commitment.trycloudflare.com/api/tasks/';
 export type Task = {
   id: number;
   title: string;
