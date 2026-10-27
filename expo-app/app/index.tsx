@@ -1,16 +1,20 @@
 import { Link, Stack } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TaskList } from '@/components/TaskList';
-import type { RootState } from '@/store/store';
-import { addTask, deleteTask, toggleTask } from '@/store/tasksSlice';
+import type { AppDispatch, RootState } from '@/store/store';
+import { createTask, deleteTask, fetchTasks, toggleTask } from '@/store/tasksSlice';
 
 export default function TasksScreen() {
   const [title, setTitle] = useState('');
   const tasks = useSelector((state: RootState) => state.tasks.items);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, [dispatch]);
 
   const handleAdd = () => {
     const trimmed = title.trim();
@@ -18,7 +22,7 @@ export default function TasksScreen() {
       return;
     }
 
-    dispatch(addTask(trimmed));
+    dispatch(createTask(trimmed));
     setTitle('');
   };
 

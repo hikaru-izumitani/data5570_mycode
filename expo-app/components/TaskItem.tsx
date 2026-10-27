@@ -4,8 +4,8 @@ import type { Task } from '@/store/tasksSlice';
 
 type TaskItemProps = {
   task: Task;
-  onToggle: (id: string) => void;
-  onDelete: (id: string) => void;
+  onToggle: (id: number) => void;
+  onDelete: (id: number) => void;
 };
 
 export function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {

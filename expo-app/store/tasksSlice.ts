@@ -1,11 +1,19 @@
-import { createAsyncThunk,createSlice, PayloadAction } from '@reduxjs/toolkit';
+import Constants from 'expo-constants';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Platform } from 'react-native';
 
-const API_URL = 'http://localhost:8000/api/tasks/';
+function getApiUrl() {
+  const devHost = Constants.expoConfig?.hostUri?.split(':')[0];
+  const host = Platform.OS === 'web' ? 'localhost' : (devHost ?? 'localhost');
+  return `http://${host}:8000/api/tasks/`;
+}
+
+const API_URL = getApiUrl();
 export type Task = {
-  id: string;
+  id: number;
   title: string;
   completed: boolean;
-  completed_at: string;
+  created_at: string;
 };
 
 type TasksState = {
@@ -41,7 +49,7 @@ const tasksSlice = createSlice({
       }
 
     },
-    deleteTask(state, action: PayloadAction<string>) {
+    deleteTask(state, action: PayloadAction<number>) {
       state.items = state.items.filter((item) => item.id !== action.payload);
     },
   },
@@ -56,5 +64,5 @@ extraReducers: (builder) => {
 
 });
 
-export const { addTask, deleteTask } = tasksSlice.actions;
+export const { toggleTask, deleteTask } = tasksSlice.actions;
 export default tasksSlice.reducer;
